@@ -1,25 +1,16 @@
 import React, {Component} from 'react'
 import {withRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {getRepos, getRepoItem} from '../../store/action'
 import css from './index.scss'
-import {store, ACTION_TYPES} from '../../store/repos'
 
 class Repos extends Component {
-  state = {
-    repos: []
-  }
-  
   componentDidMount() {
-    const unsubscribe = store.subscribe(async () => {
-      const state = await store.getState()
-
-      console.log(store, state)
-      this.setState(state)
-    })
-    store.dispatch({type: ACTION_TYPES.GET_REPO_LIST})
+    this.props.getRepos()
   }
 
   render() {
-    const { repos } = this.state
+    const { repos } = this.props
     return (
       <div>
         <h2>Repos:</h2>
@@ -36,11 +27,22 @@ class Repos extends Component {
       </div>
     )
   }
-
   handleRepoClick = (repo) => {
-    store.dispatch({type: ACTION_TYPES.GET_REPO_DETAIL, repo})
+    this.props.getRepoItem(repo)
     this.props.history.push('/repo')
   }
+
 }
 
-export default withRouter(Repos)
+const mapState2Props = ({repos}) => ({
+  repos
+})
+export default withRouter(
+  connect(
+    mapState2Props, 
+    {
+      getRepos, 
+      getRepoItem
+    }
+  )(Repos)
+)

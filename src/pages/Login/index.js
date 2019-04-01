@@ -17,7 +17,6 @@ class Login extends Component {
       getAccessToken().then(res => {
         const data = str2Obj(res.data)
 
-        console.log(data)
         if (data.error) {
           // todo handle err.
         } else {

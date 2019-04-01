@@ -50,10 +50,21 @@ export function getRepoList() {
   return GET(url)
 }
 
-export function getRefs() {
+export function getRefs(user, repo_name) {
+  const url = `/repos/${user}/${repo_name}/git/refs`
 
+  return GET(url)
 }
 
-export function getRepo(url) {
-  return GET('https://api.github.com/repos/life1st/Air-Matters-web/downloads')
+export async function getRepo(user, repo_name) {
+  const refs = await getRefs(user, repo_name)
+  if (refs.status === 200) {
+    const sha = refs.data[0].object.sha
+
+    const url = `/repos/${user}/${repo_name}/git/trees/${sha}`
+
+    return GET(url)
+  } else {
+    return Promise.reject('get sha error')
+  }
 }
