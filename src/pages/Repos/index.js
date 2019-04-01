@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {getRepos, getRepoItem} from '../../store/action'
+import {getRepos} from '../../store/action'
 import css from './index.scss'
 
 class Repos extends Component {
@@ -28,8 +28,7 @@ class Repos extends Component {
     )
   }
   handleRepoClick = (repo) => {
-    this.props.getRepoItem(repo)
-    this.props.history.push('/repo')
+    this.props.history.push('/repo', {repo})
   }
 
 }
@@ -41,8 +40,7 @@ export default withRouter(
   connect(
     mapState2Props, 
     {
-      getRepos, 
-      getRepoItem
+      getRepos
     }
   )(Repos)
 )

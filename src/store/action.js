@@ -1,5 +1,6 @@
 import {getRepoList, getRepo, getRefs} from '../utils/request';
 
+// todo: Quiz, 这到底是 action 还是 dispatch 呢
 export function getRepos() {
   return async dispatch => {
     const res = await getRepoList()

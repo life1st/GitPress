@@ -2,7 +2,7 @@ import axios from 'axios'
 import { API_BASE } from '../../../config'
 import {isPrd} from '../../utils/env'
 
-function GET(url, config = {}) {
+export function GET(url, config = {}) {
   if (!url.includes('http')) {
     url = `${API_BASE}${url}`
   }
