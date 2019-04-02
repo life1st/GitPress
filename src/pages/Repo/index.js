@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {getRepoItem} from '../../store/action'
-import { GET } from '../../utils/request'
-// import RenderFile from '../../components/RenderFile'
+import {GET} from '../../utils/request'
+import {Base64} from 'js-base64'
+import RenderFile from '../../components/RenderFile'
 import Editor from '../../components/Editor'
+import Editor4MD from '../../components/Editor4MD'
 
 const renderTree = ({files, handleItemClick}) => (
   <ul>
@@ -40,6 +42,16 @@ class Repo extends Component {
   render() {
     const {repo} = this.props
     const {files, file, isFetchingFile} = this.state
+    const fileRender = (file) => {
+      const type = file.path.split('.').pop()
+      if (type === 'md') {
+        return (<Editor4MD file={file} />)
+      }
+      if (['js', 'css', 'less', 'scss', 'html'].includes(type)) {
+        return (<RenderFile file={file} />)
+      }
+      return <Editor file={file} />
+    }
     return (
       <div>
         <h2>Repo</h2>
@@ -63,7 +75,7 @@ class Repo extends Component {
           isFetchingFile
           ? <div>Loading。。。</div>
           // : file && (<RenderFile file={file} />)
-          : file && (<Editor file={file} />)
+          : file && fileRender(file)
         }
       </div>
     )
@@ -90,7 +102,8 @@ class Repo extends Component {
         this.setState({
           file: {
             ...data,
-            ...file
+            ...file,
+            content: Base64.decode(data.content)
           },
           isFetchingFile: false
         })

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {Base64} from 'js-base64'
 import {markdown} from 'markdown'
 // import hljs from 'highlight.js'
 import hljs from 'highlight.js'
@@ -20,25 +19,25 @@ class RenderFile extends Component {
       const typeMap = {
         ['.md']: (file) => (
           <pre dangerouslySetInnerHTML={{__html:
-            markdown.toHTML(Base64.decode(file.content))
+            markdown.toHTML(file.content)
           }} />
         ),
         ['.js']: (file) => (
           <pre>
             <code className="js">
-              {Base64.decode(file.content)}
+              {file.content}
             </code>
           </pre>
         ),
         ['.html']: (file) => (
           <pre>
             <code className="html">
-              {Base64.decode(file.content)}
+              {file.content}
             </code>
           </pre>
         ),
         ['.png']: (file) => (
-          <img src={Base64.decode(file.content)} alt=""/>
+          <img src={file.content} alt=""/>
         )
       }
 
@@ -51,7 +50,7 @@ class RenderFile extends Component {
         content = (
           <pre>
             <code className={type}>
-              {Base64.decode(file.content)}
+              {file.content}
             </code>
           </pre>
         )

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {Base64} from 'js-base64'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main'
 import css from './index.scss'
 
@@ -13,7 +12,7 @@ class Editor extends Component {
     let type = ''
     if (file) {
       type = file.path.split('.').pop()
-      content = Base64.decode(file.content)
+      content = file.content
     }
     monaco.editor.create(
       this.el,
