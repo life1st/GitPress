@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {getRepoItem} from '../../store/action'
 import { GET } from '../../utils/request'
-import RenderFile from '../../components/RenderFile'
-import {NET_TYPES} from '../../store/action'
+// import RenderFile from '../../components/RenderFile'
+import Editor from '../../components/Editor'
 
 const renderTree = ({files, handleItemClick}) => (
   <ul>
@@ -62,7 +62,8 @@ class Repo extends Component {
         {
           isFetchingFile
           ? <div>Loading。。。</div>
-          : file && (<RenderFile file={file} />)
+          // : file && (<RenderFile file={file} />)
+          : file && (<Editor file={file} />)
         }
       </div>
     )

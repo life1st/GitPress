@@ -2,12 +2,15 @@ import React, {Component} from 'react'
 import {Base64} from 'js-base64'
 import {markdown} from 'markdown'
 // import hljs from 'highlight.js'
-import 'highlight.js/lib/index'
+import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
 
 class RenderFile extends Component {
   static defaultProps = {
     file: null
+  }
+  componentDidMount() {
+    hljs.initHighlighting()
   }
   render() {
     const {file} = this.props
@@ -33,15 +36,25 @@ class RenderFile extends Component {
               {Base64.decode(file.content)}
             </code>
           </pre>
+        ),
+        ['.png']: (file) => (
+          <img src={Base64.decode(file.content)} alt=""/>
         )
       }
-      
+
       const knownType = Object.keys(typeMap).find(type => path.includes(type))
-      console.log(knownType)
+      // console.log(knownType)
       if (!!knownType) {
         content = typeMap[knownType](file)
       } else {
-        content = Base64.decode(file.content)
+        const type = path.split('.').pop()
+        content = (
+          <pre>
+            <code className={type}>
+              {Base64.decode(file.content)}
+            </code>
+          </pre>
+        )
       }
     }
     return (
