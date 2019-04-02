@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {getRepoItem} from '../../store/action'
 import { GET } from '../../utils/request'
 import RenderFile from '../../components/RenderFile'
+import {NET_TYPES} from '../../store/action'
 
 const renderTree = ({files, handleItemClick}) => (
   <ul>
@@ -19,11 +20,16 @@ const renderTree = ({files, handleItemClick}) => (
 class Repo extends Component {
   state = {
     files: [],
-    file: null
+    file: null,
+    isFetchingFile: false
   }
   componentDidMount() {
-    const {repo} = this.props.history.location.state
-    this.props.getRepoItem(repo)
+    const {state} = this.props.history.location
+    if (state && state.repo) {
+      this.props.getRepoItem(state.repo)
+    }
+    // const {sha} = this.props.history
+    console.log(this.props)
   }
   componentWillReceiveProps(props) {
     this.setState({
@@ -33,7 +39,7 @@ class Repo extends Component {
 
   render() {
     const {repo} = this.props
-    const {files, file} = this.state
+    const {files, file, isFetchingFile} = this.state
     return (
       <div>
         <h2>Repo</h2>
@@ -54,9 +60,9 @@ class Repo extends Component {
 
         <h3>file</h3>
         {
-          file && (
-            <RenderFile file={file} />
-          )
+          isFetchingFile
+          ? <div>Loading。。。</div>
+          : file && (<RenderFile file={file} />)
         }
       </div>
     )
@@ -66,18 +72,26 @@ class Repo extends Component {
     GET(tree.url).then(res => {
       if (res.status === 200) {
         const data = res.data
-        console.log(data)
+        this.setState({
+          files: data.tree
+        })
       }
     })
   }
 
   fetchFile = (file) => {
+    this.setState({
+      isFetchingFile: true
+    })
     GET(file.url).then(res => {
       if (res.status === 200) {
         const data = res.data
-        console.log(data)
         this.setState({
-          file: data
+          file: {
+            ...data,
+            ...file
+          },
+          isFetchingFile: false
         })
       }
     })
@@ -88,6 +102,7 @@ class Repo extends Component {
     switch (file.type) {
       case 'tree':
         this.fetchTree(file)
+        this.props.history.push(`/repo/${file.sha}`)
         break
       case 'blob':
         this.fetchFile(file)

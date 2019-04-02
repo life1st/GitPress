@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom'
 import Loadable from 'react-loadable'
 
 import Home from '../pages/Home'
@@ -42,7 +42,9 @@ class Pages extends Component {
           <Route exact path='/login' component={Login} />
           <Route exact path='/about' component={About} />
           <Route exact path='/repos' component={Repos} />
-          <Route exact path='/repo' component={Repo} />
+          <Route path='/repo/:sha' component={Repo} />
+          <Route path='/repo' component={Repo} />
+          <Redirect to='/'></Redirect>
         </Switch>
       </Router>
     )
