@@ -1,6 +1,15 @@
-import {getRepoList, getRepo, getRefs} from '../utils/request';
-
+import {getRepoList, getRepo} from '../utils/request';
+import {getUser} from '../utils/request/user'
+import {
+  REPO_TYPES as TYPES,
+  NET_TYPES,
+  USER_TYPES,
+  ARTICLE_TYPES
+} from './actionTypes'
+import {GET} from '../utils/request'
+import { async } from 'q';
 // todo: Quiz, 这到底是 action 还是 dispatch 呢
+// 04.03 It's action. just return a func, and redux thunk will handle this on middleware, after finish, dispatch to redux.
 export function getRepos() {
   return async dispatch => {
     const res = await getRepoList()
@@ -16,9 +25,9 @@ export function getRepos() {
   }
 }
 
-export function getRepoItem(repo) {
+export function getRepoItem(username, reponame, branch) {
   return async dispatch => {
-    const res = await getRepo(repo.owner.login, repo.name)
+    const res = await getRepo(username, reponame, branch)
     if (res.status === 200) {
       const {data} = res
       dispatch({
@@ -33,15 +42,60 @@ export function getRepoItem(repo) {
   }
 }
 
-const TYPES = {
-  GET_REPO_LIST: 'repos/get_repo_list',
-  GET_REPO_DETAIL: 'repos/get_repo_detail'
+export function getUserInfo() {
+  return async dispatch => {
+    const res = await getUser()
+    if (res.status === 200) {
+      const {data} = res
+      dispatch({
+        type: USER_TYPES.GET_LOGIN_INFO,
+        payload: data
+      })
+    } else {
+      dispatch({
+        type: NET_TYPES.FAILED
+      })
+    }
+  }
 }
 
-export const NET_TYPES = {
-  FETCHING: 'net/fetching',
-  SUCCESS: 'net/success',
-  FAILED: 'net/failed'
+
+export function getSubFolderFiles(url, path) {
+  return async dispatch => {
+    const res = await GET(url)
+    if (res.status === 200) {
+      const {data} = res
+      dispatch({
+        type: ARTICLE_TYPES.FETCH_ARTICLE_LIST_SUCCESS,
+        payload: {
+          ...data.tree
+          .map(item => ({...item, folder: path}))
+          .reduce((counter, currentVal) => {
+            counter[currentVal.sha] = currentVal
+            return counter
+          }, {})
+        }
+      })
+    }
+  }
 }
 
-export const ACTION_TYPES = TYPES
+export function filterCategory(folder) {
+  return {
+    type: ARTICLE_TYPES.CHANGE_CATEGORY,
+    payload: folder
+  }
+}
+
+export function getFile(url) {
+  return async dispatch => {
+    const res = await GET(url)
+    if (res.status === 200) {
+      const {data} = res
+      dispatch({
+        type: ARTICLE_TYPES.FETCH_ARTICLE,
+        payload: data
+      })
+    }
+  }
+}

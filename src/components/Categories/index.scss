@@ -1,0 +1,26 @@
+.categories {
+  display: flex;
+  list-style: none;
+  .item {
+    margin: 8px 6px;
+    cursor: pointer;
+    &:hover {
+      color: #F6F6F6;
+      background-color: #333;
+      border-radius: 6px;
+      animation: rBorder 1s linear infinite alternate;
+    }
+    &.selected {
+      text-decoration: underline;
+    }
+  }
+}
+
+@keyframes rBorder {
+  0% {
+    border-radius: 0px;
+  }
+  100% {
+    border-radius: 4px;
+  }
+}

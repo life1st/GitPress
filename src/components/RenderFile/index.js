@@ -1,18 +1,30 @@
 import React, {Component} from 'react'
 import {markdown} from 'markdown'
-// import hljs from 'highlight.js'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
+import css from './index.scss'
 
 class RenderFile extends Component {
   static defaultProps = {
     file: null
   }
+  state = {
+    text: ''
+  }
   componentDidMount() {
-    hljs.initHighlighting()
+    this.highlightText()
+  }
+  componentWillUpdate() {
+    this.highlightText()
+  }
+  highlightText = () => {
+    this.containorEl.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightBlock(block)
+    })
   }
   render() {
-    const {file} = this.props
+    const {file, isAdmin} = this.props
+
     let content = <p />
     if (!!file) {
       const {path} = file
@@ -42,7 +54,6 @@ class RenderFile extends Component {
       }
 
       const knownType = Object.keys(typeMap).find(type => path.includes(type))
-      // console.log(knownType)
       if (!!knownType) {
         content = typeMap[knownType](file)
       } else {
@@ -57,7 +68,17 @@ class RenderFile extends Component {
       }
     }
     return (
-      <div>
+      <div ref={ref => this.containorEl = ref}>
+        <div className={css.opreations}>
+          {
+            isAdmin ? (
+              <button>编辑</button>
+            ) : (
+              <button>关注</button>
+            )
+          }
+          <button>收藏</button>
+        </div>
         {content}
       </div>
     )

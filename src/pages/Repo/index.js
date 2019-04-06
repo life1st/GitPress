@@ -4,8 +4,6 @@ import {getRepoItem} from '../../store/action'
 import {GET} from '../../utils/request'
 import {Base64} from 'js-base64'
 import RenderFile from '../../components/RenderFile'
-import Editor from '../../components/Editor'
-import Editor4MD from '../../components/Editor4MD'
 
 const renderTree = ({files, handleItemClick}) => (
   <ul>
@@ -25,13 +23,14 @@ class Repo extends Component {
     file: null,
     isFetchingFile: false
   }
-  componentDidMount() {
-    const {state} = this.props.history.location
-    if (state && state.repo) {
-      this.props.getRepoItem(state.repo)
+  
+  async componentWillMount() {
+    if (Object.keys(this.props.repo).length === 0) {
+      // 刷新后的数据恢复
+      const {username, reponame} = this.props.match.params
+      await this.props.getRepoItem(username, reponame)
     }
     // const {sha} = this.props.history
-    console.log(this.props)
   }
   componentWillReceiveProps(props) {
     this.setState({
@@ -42,16 +41,6 @@ class Repo extends Component {
   render() {
     const {repo} = this.props
     const {files, file, isFetchingFile} = this.state
-    const fileRender = (file) => {
-      const type = file.path.split('.').pop()
-      if (type === 'md') {
-        return (<Editor4MD file={file} />)
-      }
-      if (['js', 'css', 'less', 'scss', 'html'].includes(type)) {
-        return (<RenderFile file={file} />)
-      }
-      return <Editor file={file} />
-    }
     return (
       <div>
         <h2>Repo</h2>
@@ -74,8 +63,7 @@ class Repo extends Component {
         {
           isFetchingFile
           ? <div>Loading。。。</div>
-          // : file && (<RenderFile file={file} />)
-          : file && fileRender(file)
+          : file && (<RenderFile file={file} />)
         }
       </div>
     )
@@ -112,7 +100,6 @@ class Repo extends Component {
   }
   
   handleItemClick = (file) => {
-    console.log(file)
     switch (file.type) {
       case 'tree':
         this.fetchTree(file)
@@ -125,9 +112,9 @@ class Repo extends Component {
   }
 }
 
-const mapState2Props = (state) => {
+const mapState2Props = ({repos}) => {
   return ({
-    repo: state.repoDetail
+    repo: repos.detail
   })
 }
 

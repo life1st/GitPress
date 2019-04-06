@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "NODE_ENV=dev parcel src/index.html",
     "build": "NODE_ENV=production parcel build src/index.html"
   },
   "author": "life1st",
@@ -19,6 +19,7 @@
     "babel-runtime": "^6.26.0",
     "parcel": "^1.12.3",
     "postcss-modules": "^1.4.1",
+    "redux-devtools-extension": "^2.13.8",
     "sass": "^1.17.3"
   },
   "dependencies": {

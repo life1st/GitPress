@@ -1,0 +1,11 @@
+.userContainor {
+  display: flex;
+}
+.avatar {
+  $h: 40px;
+  width: $h;
+  height: $h;
+  margin-right: 10px;
+  background-color: #ccc;
+  border-radius: $h / 2;
+}

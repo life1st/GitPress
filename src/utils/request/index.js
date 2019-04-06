@@ -56,11 +56,13 @@ export function getRefs(user, repo_name) {
   return GET(url)
 }
 
-export async function getRepo(user, repo_name) {
+export async function getRepo(user, repo_name, branch) {
   const refs = await getRefs(user, repo_name)
   if (refs.status === 200) {
-    const sha = refs.data[0].object.sha
+    let i = refs.data.findIndex(item => item.ref.includes(branch))
+    if (i === -1) i = 0
 
+    const sha = refs.data[i].object.sha
     const url = `/repos/${user}/${repo_name}/git/trees/${sha}`
 
     return GET(url)
