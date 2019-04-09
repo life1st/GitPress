@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import User from '../../components/User'
 import Categories from '../../components/Categories'
+import Calender from '../../components/Calender'
 import {getSubFolderFiles, getFile} from '../../store/action'
 
 class Home extends Component {
@@ -30,6 +31,7 @@ class Home extends Component {
       <div>
         <User />
         <Categories />
+        <Calender />
         <ul>
         {
           articleList.map(item => (
